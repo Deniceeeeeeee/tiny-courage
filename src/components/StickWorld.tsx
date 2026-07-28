@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react'
 import type { Accessory, AnimationState, Person } from '../types'
-import backpackUrl from '../../backpack.png'
-import capUrl from '../../cap.png'
-import coffeeUrl from '../../coffee-cup.png'
-import glassesUrl from '../../glasses.png'
-import parachuteUrl from '../../parachute.png'
+
+const backpackUrl = "/coverage/backpack.png";
+const capUrl = "/coverage/cap.png";
+const coffeeUrl = "/coverage/coffee-cup.png";
+const glassesUrl = "/coverage/glasses.png";
+const parachuteUrl = "/coverage/parachute.png";
 
 interface RuntimePerson {
   x: number

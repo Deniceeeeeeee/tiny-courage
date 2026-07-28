@@ -1,10 +1,10 @@
 import { ArrowLeft, Download, Sparkles } from 'lucide-react'
 import type { Person } from '../types'
 import StickWorld, { drawStickPerson } from './StickWorld'
-import backpackUrl from '../../backpack.png'
-import capUrl from '../../cap.png'
-import coffeeUrl from '../../coffee-cup.png'
-import glassesUrl from '../../glasses.png'
+const backpackUrl = "/coverage/backpack.png"
+const capUrl = "/coverage/cap.png"
+const coffeeUrl = "/coverage/coffee-cup.png"
+const glassesUrl = "/coverage/glasses.png"
 
 interface Props {
   eventName: string
