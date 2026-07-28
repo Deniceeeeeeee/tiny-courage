@@ -1,10 +1,6 @@
 import { ArrowLeft, Download, Sparkles } from 'lucide-react'
 import type { Person } from '../types'
 import StickWorld, { drawStickPerson } from './StickWorld'
-const backpackUrl = "/coverage/backpack.png"
-const capUrl = "/coverage/cap.png"
-const coffeeUrl = "/coverage/coffee-cup.png"
-const glassesUrl = "/coverage/glasses.png"
 
 interface Props {
   eventName: string
@@ -13,8 +9,6 @@ interface Props {
   onReturn: () => void
   onNew: () => void
 }
-
-const imageSources = { cap: capUrl, glasses: glassesUrl, backpack: backpackUrl, coffee: coffeeUrl }
 
 async function downloadRecap(eventName: string, goal: number, people: Person[]) {
   const canvas = document.createElement('canvas')
@@ -39,20 +33,13 @@ async function downloadRecap(eventName: string, goal: number, people: Person[]) 
   ctx.lineWidth = 4
   ctx.beginPath(); ctx.moveTo(90, 1010); ctx.bezierCurveTo(400, 980, 780, 1030, 1110, 990); ctx.stroke()
 
-  const images: Record<string, HTMLImageElement> = {}
-  await Promise.all(Object.entries(imageSources).map(([name, src]) => new Promise<void>((resolve) => {
-    const image = new Image()
-    image.onload = () => { images[name] = image; resolve() }
-    image.onerror = () => resolve()
-    image.src = src
-  })))
   const cols = Math.min(8, Math.max(3, Math.ceil(Math.sqrt(people.length * 1.8))))
   people.forEach((person, index) => {
     const row = Math.floor(index / cols)
     const col = index % cols
     const x = 145 + col * (920 / Math.max(cols - 1, 1)) + (row % 2) * 18
     const y = 540 + row * 145
-    drawStickPerson(ctx, x, Math.min(980, y), 1.2, index % 3 === 0 ? 'waving' : 'standing', index % 2 ? 1 : -1, index, person.accessory, images)
+    drawStickPerson(ctx, x, Math.min(980, y), 1.2, index % 3 === 0 ? 'waving' : 'standing', index % 2 ? 1 : -1, index)
     ctx.font = '600 18px system-ui'
     ctx.textAlign = 'center'
     ctx.fillText(person.name, x, Math.min(1022, y + 35))

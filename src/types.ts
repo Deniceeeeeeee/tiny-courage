@@ -1,4 +1,4 @@
-export type Accessory = 'none' | 'cap' | 'glasses' | 'backpack' | 'coffee'
+export type Accessory = 'none'
 export type AnimationState =
   | 'arriving'
   | 'standing'

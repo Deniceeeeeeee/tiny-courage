@@ -14,7 +14,7 @@ import { deactivateSession, deleteSession, loadSession, loadSessions, saveSessio
 import { classifyCameraFailure } from './utils/camera'
 import type { Accessory, AppScreen, EventSession, Person } from './types'
 
-const accessoryOptions: Accessory[] = ['none', 'none', 'none', 'none', 'none', 'none', 'cap', 'glasses', 'backpack', 'coffee']
+const accessoryOptions: Accessory[] = ['none']
 
 function milestone(count: number, goal: number) {
   if (count === 1) return 'The first hello is always the hardest.'

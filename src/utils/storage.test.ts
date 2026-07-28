@@ -87,4 +87,12 @@ describe('saved event library', () => {
     expect(migrated[0].people).toHaveLength(2)
     expect(migrated[0].id).toBeTruthy()
   })
+
+  it('removes retired accessories from saved people', () => {
+    const saved = event('event-a', 'Accessory Cleanup', 1)
+    saved.people[0] = { ...saved.people[0], accessory: 'backpack' as never }
+    saveSession(saved)
+
+    expect(loadSession()?.people[0].accessory).toBe('none')
+  })
 })

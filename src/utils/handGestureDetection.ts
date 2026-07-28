@@ -1,5 +1,5 @@
-export const TOUCH_THRESHOLD_RATIO = 0.18
-export const RELEASE_THRESHOLD_RATIO = 0.25
+export const TOUCH_THRESHOLD_RATIO = 0.24
+export const RELEASE_THRESHOLD_RATIO = 0.34
 export const FINGERTIP_IDS = [8, 12, 16, 20] as const
 export type FingerName = 'index' | 'middle' | 'ring' | 'little'
 export const FINGER_NAMES: FingerName[] = ['index', 'middle', 'ring', 'little']
@@ -7,11 +7,11 @@ export const FINGER_NAMES: FingerName[] = ['index', 'middle', 'ring', 'little']
 export interface Point3D { x: number; y: number; z?: number }
 export type TouchState = Record<FingerName, boolean>
 
-const distance = (a: Point3D, b: Point3D) =>
-  Math.hypot(a.x - b.x, a.y - b.y, (a.z ?? 0) - (b.z ?? 0))
+const screenDistance = (a: Point3D, b: Point3D) =>
+  Math.hypot(a.x - b.x, a.y - b.y)
 
 export function getPalmWidth(landmarks: Point3D[]): number {
-  return distance(landmarks[5], landmarks[17])
+  return screenDistance(landmarks[5], landmarks[17])
 }
 
 export interface GestureResult {
@@ -35,7 +35,7 @@ export function detectThumbTouch(
 
   FINGERTIP_IDS.forEach((id, index) => {
     const finger = FINGER_NAMES[index]
-    const gap = distance(thumb, landmarks[id])
+    const gap = screenDistance(thumb, landmarks[id])
     distances[finger] = gap
     if (previous[finger]) {
       nextState[finger] = gap < releaseThreshold

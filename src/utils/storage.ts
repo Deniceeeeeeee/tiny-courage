@@ -1,4 +1,4 @@
-import type { EventSession } from '../types'
+import type { EventSession, Person } from '../types'
 
 const LEGACY_STORAGE_KEY = 'tiny-courage-session-v1'
 const EVENTS_STORAGE_KEY = 'tiny-courage-events-v2'
@@ -10,10 +10,18 @@ function isSession(value: unknown): value is EventSession {
   return Boolean(session.eventName && Array.isArray(session.people))
 }
 
+function normalizePerson(person: Person): Person {
+  return {
+    ...person,
+    accessory: 'none',
+  }
+}
+
 function normalizeSession(session: EventSession): EventSession {
   return {
     ...session,
     id: session.id || crypto.randomUUID(),
+    people: session.people.map(normalizePerson),
     updatedAt: session.updatedAt || session.startedAt || Date.now(),
   }
 }

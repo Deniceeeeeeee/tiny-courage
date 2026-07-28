@@ -45,4 +45,10 @@ describe('thumb touch gesture', () => {
     expect(detectThumbTouch(hand([16], 0.5), EMPTY_TOUCH_STATE).triggered).toBe('ring')
     expect(detectThumbTouch(hand([16], 2), EMPTY_TOUCH_STATE).triggered).toBe('ring')
   })
+
+  it('uses screen distance so depth jitter does not hide a visible tap', () => {
+    const landmarks = hand([8])
+    landmarks[8] = { ...landmarks[8], z: 0.3 }
+    expect(detectThumbTouch(landmarks, EMPTY_TOUCH_STATE).triggered).toBe('index')
+  })
 })

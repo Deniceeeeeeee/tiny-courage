@@ -1,10 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
-import type { Accessory, AnimationState, Person } from '../types'
+import type { AnimationState, Person } from '../types'
 
-const backpackUrl = "/coverage/backpack.png";
-const capUrl = "/coverage/cap.png";
-const coffeeUrl = "/coverage/coffee-cup.png";
-const glassesUrl = "/coverage/glasses.png";
 const parachuteUrl = "/coverage/parachute.png";
 
 interface RuntimePerson {
@@ -49,8 +45,6 @@ export function drawStickPerson(
   state: AnimationState,
   direction: -1 | 1,
   phase: number,
-  accessory: Accessory,
-  images: Record<string, HTMLImageElement>,
   alpha = 1,
 ) {
   ctx.save()
@@ -66,13 +60,36 @@ export function drawStickPerson(
   const waving = state === 'waving' || state === 'cheering' || state === 'highfive'
   const sitting = state === 'sitting'
   const lying = state === 'lying'
+  if (lying) {
+    ctx.beginPath()
+    ctx.arc(-30, -11, 10.5, 0, Math.PI * 2)
+    ctx.stroke()
+
+    ctx.beginPath()
+    ctx.moveTo(-19, -9)
+    ctx.quadraticCurveTo(2, -13, 24, -8)
+    ctx.stroke()
+
+    ctx.beginPath()
+    ctx.moveTo(-2, -10)
+    ctx.quadraticCurveTo(-4, -22, -14, -26)
+    ctx.moveTo(0, -10)
+    ctx.quadraticCurveTo(8, 0, 20, -1)
+    ctx.stroke()
+
+    ctx.beginPath()
+    ctx.moveTo(23, -8)
+    ctx.quadraticCurveTo(35, -15, 46, -13)
+    ctx.moveTo(23, -8)
+    ctx.quadraticCurveTo(35, -1, 47, 0)
+    ctx.stroke()
+
+    ctx.restore()
+    return
+  }
   const jump = state === 'cheering' ? Math.abs(Math.sin(phase * 2.8)) * 9 : 0
   const bob = walking ? Math.abs(Math.sin(phase * 5)) * 2 : 0
   ctx.translate(0, -jump - bob)
-  if (lying) {
-    ctx.rotate(-Math.PI / 2)
-    ctx.translate(28, -16)
-  }
 
   const headY = -58
   ctx.beginPath()
@@ -113,15 +130,6 @@ export function drawStickPerson(
   }
   ctx.stroke()
 
-  if (accessory !== 'none') {
-    const image = images[accessory]
-    if (image?.complete) {
-      if (accessory === 'cap') ctx.drawImage(image, -19, -79, 38, 25)
-      if (accessory === 'glasses') ctx.drawImage(image, -16, -64, 32, 18)
-      if (accessory === 'backpack') ctx.drawImage(image, 3, -46, 24, 34)
-      if (accessory === 'coffee') ctx.drawImage(image, 12, -31, 22, 22)
-    }
-  }
   ctx.restore()
 }
 
@@ -140,10 +148,6 @@ export default function StickWorld({
   const frameRef = useRef(0)
   const images = useMemo(() => ({
     parachute: loadImage(parachuteUrl),
-    cap: loadImage(capUrl),
-    glasses: loadImage(glassesUrl),
-    backpack: loadImage(backpackUrl),
-    coffee: loadImage(coffeeUrl),
   }), [])
 
   useEffect(() => {
@@ -249,7 +253,7 @@ export default function StickWorld({
         }
 
         const state = arriving ? (age > 3200 ? 'waving' : 'standing') : live.state
-        drawStickPerson(ctx, live.x, y, .72, state, live.direction, now / 1000 + index, person.accessory, images, isDeparting ? alpha : arriving ? Math.min(1, age / 450) : 1)
+        drawStickPerson(ctx, live.x, y, .72, state, live.direction, now / 1000 + index, isDeparting ? alpha : arriving ? Math.min(1, age / 450) : 1)
         if (!arriving && !isDeparting && (state === 'standing' || state === 'talking')) {
           ctx.fillStyle = 'rgba(247,241,228,.9)'
           ctx.font = '600 10px system-ui'
