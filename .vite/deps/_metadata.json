@@ -1,0 +1,46 @@
+{
+  "hash": "c5cea696",
+  "configHash": "cef7cb8e",
+  "lockfileHash": "05a6f89e",
+  "browserHash": "e6c6a9a1",
+  "optimized": {
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "08275035",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "875c8fb3",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "f45029b8",
+      "needsInterop": true
+    },
+    "lucide-react": {
+      "src": "../../node_modules/lucide-react/dist/esm/lucide-react.js",
+      "file": "lucide-react.js",
+      "fileHash": "3a109db7",
+      "needsInterop": false
+    },
+    "@mediapipe/tasks-vision": {
+      "src": "../../node_modules/@mediapipe/tasks-vision/vision_bundle.mjs",
+      "file": "@mediapipe_tasks-vision.js",
+      "fileHash": "76c06196",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-32E4H3EV": {
+      "file": "chunk-32E4H3EV.js"
+    },
+    "chunk-G3PMV62Z": {
+      "file": "chunk-G3PMV62Z.js"
+    }
+  }
+}
