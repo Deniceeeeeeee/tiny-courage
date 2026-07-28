@@ -282,12 +282,25 @@ export default function StickWorld({
           if (!onSelect || !people.length) return
           const rect = event.currentTarget.getBoundingClientRect()
           const x = event.clientX - rect.left
+          const y = event.clientY - rect.top
+          const ground = rect.height - 34
           let nearest: Person | null = null
-          let gap = 35
+          let nearestDistance = Number.POSITIVE_INFINITY
           people.forEach((person) => {
             const live = runtime.current.get(person.id)
-            const delta = Math.abs((live?.x ?? person.x * rect.width) - x)
-            if (delta < gap) { gap = delta; nearest = person }
+            const personX = live?.x ?? person.x * rect.width
+            const personState = live?.state ?? person.state
+            const isLying = personState === 'lying'
+            const left = personX - (isLying ? 42 : 22)
+            const right = personX + (isLying ? 42 : 22)
+            const top = ground - (isLying ? 28 : 66)
+            const bottom = ground + (isLying ? 8 : 16)
+            if (x < left || x > right || y < top || y > bottom) return
+            const distanceFromCenter = Math.hypot(x - personX, y - (top + bottom) / 2)
+            if (distanceFromCenter < nearestDistance) {
+              nearestDistance = distanceFromCenter
+              nearest = person
+            }
           })
           if (nearest) onSelect(nearest)
         }}
