@@ -150,13 +150,23 @@ textarea { resize: vertical; }
 .modal-close { position: absolute; z-index: 2; top: 15px; right: 15px; width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 50%; background: var(--cream); cursor: pointer; display: grid; place-items: center; }
 .modal-face { display: grid; place-items: center; width: 53px; height: 53px; margin-bottom: 15px; border: 3px solid var(--ink); border-radius: 50%; background: var(--yellow); font-size: 27px; font-weight: 800; transform: rotate(90deg); }
 .person-modal form { display: grid; gap: 15px; margin-top: 22px; }.person-modal label span { color: #aaa093; font-weight: 500; }.person-modal .text-button { margin-top: -5px; }
+.photo-field { display: grid; gap: 10px; }
+.photo-field > span { font-size: 13px; font-weight: 800; }.photo-field em { color: #aaa093; font-style: normal; font-weight: 500; }
+.photo-field img, .profile-photo { width: 86px; height: 86px; border: 2px solid var(--ink); border-radius: 16px; object-fit: cover; background: var(--cream); box-shadow: 3px 4px 0 var(--ink); }
+.photo-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.photo-button { width: max-content; min-height: 40px; margin: 0; padding: 0 14px; border: 1px solid var(--line); border-radius: 99px; background: var(--cream); cursor: pointer; display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 800; }
+.photo-button input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.photo-remove { min-height: 40px; margin: 0; }
+.photo-error { margin: 0; color: #9d3d2d; font-size: 11px; }
 
 .profile-wrap { position: fixed; z-index: 15; inset: 0; display: grid; place-items: end center; padding: 18px; pointer-events: none; }
 .profile-card { position: relative; width: min(100%, 420px); padding: 25px 22px; border: 1px solid var(--line); border-radius: 24px; background: var(--paper); box-shadow: 0 20px 70px rgba(39,30,15,.22); pointer-events: auto; animation: slide-up .25s ease; }
 .profile-avatar { position: relative; width: 48px; height: 48px; margin-bottom: 10px; border-radius: 50%; background: var(--yellow); }
+.profile-photo { display: block; margin-bottom: 12px; }
 .profile-avatar::before { content: ''; position: absolute; width: 15px; height: 15px; border: 3px solid var(--ink); border-radius: 50%; left: 15px; top: 6px; }
 .profile-avatar::after { content: ''; position: absolute; width: 3px; height: 20px; background: var(--ink); left: 23px; top: 22px; }
 .profile-card label { margin-top: 13px; }.profile-card dl { display: grid; grid-template-columns: 75px 1fr; gap: 6px; font-size: 12px; }.profile-card dt { color: #988e7f; }.profile-card dd { margin: 0; font-weight: 700; }
+.profile-photo-field { margin-top: 13px; }
 .small-primary { width: 100%; min-height: 45px; margin-top: 14px; background: var(--yellow); }
 
 .milestone-banner, .arrival-banner { position: fixed; z-index: 12; top: max(14px, env(safe-area-inset-top)); left: 50%; width: max-content; max-width: calc(100% - 30px); transform: translateX(-50%); border: 1px solid var(--ink); border-radius: 99px; background: var(--paper); box-shadow: 3px 4px 0 var(--ink); padding: 10px 17px; font-size: 12px; font-weight: 700; text-align: center; animation: banner-in .35s ease; }

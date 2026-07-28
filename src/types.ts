@@ -15,6 +15,7 @@ export interface Person {
   id: string
   name: string
   note: string
+  photo?: string
   order: number
   x: number
   y: number

@@ -110,7 +110,7 @@ export default function App() {
     }, 1200)
   }, [pendingPerson, personModal, session])
 
-  const addPerson = (name: string, note: string) => {
+  const addPerson = (name: string, note: string, photo?: string) => {
     if (!session) return
     const order = session.people.length + 1
     const draft = additionSource === 'gesture' && pendingPerson ? pendingPerson : null
@@ -118,6 +118,7 @@ export default function App() {
       id: draft?.id ?? crypto.randomUUID(),
       name: name || `Friend ${session.people.filter((person) => /^Friend \d+$/.test(person.name)).length + 1}`,
       note,
+      photo,
       order,
       x: draft?.x ?? .12 + Math.random() * .76,
       y: .82,
@@ -277,14 +278,14 @@ export default function App() {
         setPersonModal(false)
         setScreen('recap')
       }}><Flag size={17} /> End Event & See Recap</button>
-      <p className="footer-note">Your names and notes stay on this device.</p>
+      <p className="footer-note">Your names, notes and photos stay on this device.</p>
       <PersonModal open={personModal} onConfirm={addPerson} onCancel={closeModal} />
       <CharacterDetails
         person={selected}
         eventName={session.eventName}
         onClose={() => setSelected(null)}
-        onSave={(id, name, note) => {
-          setSession({ ...session, people: session.people.map((person) => person.id === id ? { ...person, name, note } : person) })
+        onSave={(id, name, note, photo) => {
+          setSession({ ...session, people: session.people.map((person) => person.id === id ? { ...person, name, note, photo } : person) })
           setSelected(null)
         }}
       />

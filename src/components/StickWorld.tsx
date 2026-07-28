@@ -22,7 +22,31 @@ interface Props {
   onSelect?: (person: Person) => void
 }
 
-const actionPool: AnimationState[] = ['standing', 'walking', 'waving', 'sitting', 'looking', 'lying', 'cheering']
+const actionWeights: Array<{ state: AnimationState; weight: number }> = [
+  { state: 'standing', weight: 28 },
+  { state: 'walking', weight: 28 },
+  { state: 'waving', weight: 11 },
+  { state: 'sitting', weight: 10 },
+  { state: 'looking', weight: 9 },
+  { state: 'cheering', weight: 8 },
+  { state: 'lying', weight: 6 },
+]
+const totalActionWeight = actionWeights.reduce((sum, action) => sum + action.weight, 0)
+
+function pickAction(seed: number): AnimationState {
+  let cursor = seed * totalActionWeight
+  for (const action of actionWeights) {
+    cursor -= action.weight
+    if (cursor <= 0) return action.state
+  }
+  return 'standing'
+}
+
+function actionDuration(state: AnimationState, seed: number) {
+  const base = state === 'standing' || state === 'walking' ? 3200 : 2400
+  const range = state === 'standing' || state === 'walking' ? 3200 : 2200
+  return base + seed * range
+}
 
 function loadImage(src: string) {
   const image = new Image()
@@ -60,6 +84,38 @@ export function drawStickPerson(
   const waving = state === 'waving' || state === 'cheering' || state === 'highfive'
   const sitting = state === 'sitting'
   const lying = state === 'lying'
+  if (sitting) {
+    const breathe = Math.sin(phase * 2) * 1.5
+    ctx.translate(0, breathe)
+
+    ctx.beginPath()
+    ctx.arc(0, -43, 10.5, 0, Math.PI * 2)
+    ctx.stroke()
+
+    ctx.beginPath()
+    ctx.moveTo(0, -32)
+    ctx.quadraticCurveTo(1, -21, 0, -11)
+    ctx.stroke()
+
+    ctx.beginPath()
+    ctx.moveTo(0, -26)
+    ctx.quadraticCurveTo(-12, -18, -19, -8)
+    ctx.moveTo(0, -26)
+    ctx.quadraticCurveTo(12, -18, 19, -8)
+    ctx.stroke()
+
+    ctx.beginPath()
+    ctx.moveTo(0, -11)
+    ctx.quadraticCurveTo(-14, -2, -28, 0)
+    ctx.lineTo(-38, 0)
+    ctx.moveTo(0, -11)
+    ctx.quadraticCurveTo(13, -3, 25, 1)
+    ctx.lineTo(39, 1)
+    ctx.stroke()
+
+    ctx.restore()
+    return
+  }
   if (lying) {
     ctx.beginPath()
     ctx.arc(-30, -11, 10.5, 0, Math.PI * 2)
@@ -120,14 +176,9 @@ export function drawStickPerson(
   ctx.stroke()
 
   ctx.beginPath()
-  if (sitting) {
-    ctx.moveTo(0, -14); ctx.lineTo(-13, -2); ctx.lineTo(-2, 7)
-    ctx.moveTo(0, -14); ctx.lineTo(13, -2); ctx.lineTo(24, 0)
-  } else {
-    const leg = walking ? Math.sin(phase * 5) * 12 : 0
-    ctx.moveTo(0, -14); ctx.quadraticCurveTo(-8, 2, -11 - leg, 15)
-    ctx.moveTo(0, -14); ctx.quadraticCurveTo(8, 2, 11 + leg, 15)
-  }
+  const leg = walking ? Math.sin(phase * 5) * 12 : 0
+  ctx.moveTo(0, -14); ctx.quadraticCurveTo(-8, 2, -11 - leg, 15)
+  ctx.moveTo(0, -14); ctx.quadraticCurveTo(8, 2, 11 + leg, 15)
   ctx.stroke()
 
   ctx.restore()
@@ -208,18 +259,18 @@ export default function StickWorld({
           live.state = index % 2 ? 'waving' : 'cheering'
         } else if (!calm && person.id !== selectedId && !arriving) {
           if (now > live.stateUntil) {
-            live.state = actionPool[Math.floor(seeded(index, Math.floor(now / 4000)) * actionPool.length)]
-            live.stateUntil = now + 2300 + seeded(index, Math.floor(now / 7000)) * 4200
+            live.state = pickAction(seeded(index, Math.floor(now / 4000)))
+            live.stateUntil = now + actionDuration(live.state, seeded(index, Math.floor(now / 7000)))
             live.direction = seeded(index, Math.floor(now / 9000)) > .5 ? 1 : -1
             const nearby = people.find((candidate, otherIndex) => {
               if (candidate.id === person.id || otherIndex < index) return false
               const other = runtime.current.get(candidate.id)
-              return other && Math.abs(other.x - live.x) < 72
+              return other && Math.abs(other.x - live.x) < 84
             })
-            if (nearby && seeded(index, Math.floor(now / 11000)) < .22) {
+            if (nearby && seeded(index, Math.floor(now / 11000)) < .32) {
               const other = runtime.current.get(nearby.id)
               live.state = seeded(index, 8) > .5 ? 'highfive' : 'talking'
-              live.stateUntil = now + 2400
+              live.stateUntil = now + 2800
               if (other) {
                 other.state = live.state
                 other.stateUntil = live.stateUntil
@@ -291,10 +342,11 @@ export default function StickWorld({
             const personX = live?.x ?? person.x * rect.width
             const personState = live?.state ?? person.state
             const isLying = personState === 'lying'
-            const left = personX - (isLying ? 42 : 22)
-            const right = personX + (isLying ? 42 : 22)
-            const top = ground - (isLying ? 28 : 66)
-            const bottom = ground + (isLying ? 8 : 16)
+            const isSitting = personState === 'sitting'
+            const left = personX - (isLying || isSitting ? 42 : 22)
+            const right = personX + (isLying || isSitting ? 42 : 22)
+            const top = ground - (isLying ? 28 : isSitting ? 56 : 66)
+            const bottom = ground + (isLying ? 8 : isSitting ? 8 : 16)
             if (x < left || x > right || y < top || y > bottom) return
             const distanceFromCenter = Math.hypot(x - personX, y - (top + bottom) / 2)
             if (distanceFromCenter < nearestDistance) {

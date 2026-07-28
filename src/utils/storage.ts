@@ -14,6 +14,7 @@ function normalizePerson(person: Person): Person {
   return {
     ...person,
     accessory: 'none',
+    photo: typeof person.photo === 'string' ? person.photo : undefined,
   }
 }
 
