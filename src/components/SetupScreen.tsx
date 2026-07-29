@@ -102,7 +102,7 @@ export default function SetupScreen({ onStart, savedEvents, onEdit, onDelete }: 
           </div>
         </section>
       )}
-      <p className="privacy-note">Private to this device · No account needed</p>
+      <p className="privacy-note">Guest mode available · Sign in to sync</p>
     </main>
   )
 }
