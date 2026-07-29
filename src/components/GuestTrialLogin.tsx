@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { supabase } from '../lib/supabase'
+import { isSupabaseConfigured, supabase } from '../lib/supabase'
 
 type GuestTrialLoginProps = {
   open: boolean
@@ -16,6 +16,11 @@ export default function GuestTrialLogin({
   if (!open) return null
 
   const signInWithGoogle = async () => {
+    if (!supabase) {
+      setErrorMessage('Google sign-in is not configured yet.')
+      return
+    }
+
     setLoading(true)
     setErrorMessage('')
 
@@ -55,10 +60,10 @@ export default function GuestTrialLogin({
         <button
           type="button"
           className="primary-button"
-          disabled={loading}
+          disabled={loading || !isSupabaseConfigured}
           onClick={() => void signInWithGoogle()}
         >
-          {loading ? 'Opening Google...' : 'Save with Google'}
+          {loading ? 'Opening Google...' : isSupabaseConfigured ? 'Save with Google' : 'Google sign-in unavailable'}
         </button>
 
         <button

@@ -13,7 +13,7 @@ import RecapScreen from './components/RecapScreen'
 import Confetti from './components/Confetti'
 import GoogleLogin from './components/GoogleLogin'
 import GuestTrialLogin from './components/GuestTrialLogin'
-import { supabase } from './lib/supabase'
+import { isSupabaseConfigured, supabase } from './lib/supabase'
 import {
   deactivateSession,
   deleteSession,
@@ -67,6 +67,11 @@ export default function App() {
   const postLoginAction = useRef<'none' | 'new-event'>('none')
 
   useEffect(() => {
+    if (!supabase) {
+      setAuthLoading(false)
+      return
+    }
+
     let active = true
 
     void supabase.auth.getSession().then(({ data }) => {
@@ -371,7 +376,7 @@ export default function App() {
               <button
                 type="button"
                 className="auth-signout-button"
-                onClick={() => void supabase.auth.signOut()}
+                onClick={() => void supabase?.auth.signOut()}
               >
                 Sign out
               </button>
@@ -379,9 +384,13 @@ export default function App() {
           ) : (
             <div className="signed-out-row">
               <div>
-                <p className="auth-label">Sign in to explore more</p>
+                <p className="auth-label">
+                  {isSupabaseConfigured ? 'Sign in to explore more' : 'Guest mode'}
+                </p>
                 <p className="auth-description">
-                  Save your events and create more Tiny Courage moments.
+                  {isSupabaseConfigured
+                    ? 'Save your events and create more Tiny Courage moments.'
+                    : 'Login is not configured yet, so your events stay on this device.'}
                 </p>
               </div>
 

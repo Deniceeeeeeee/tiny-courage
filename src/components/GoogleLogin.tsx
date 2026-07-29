@@ -1,11 +1,16 @@
 import { useState } from 'react'
-import { supabase } from '../lib/supabase'
+import { isSupabaseConfigured, supabase } from '../lib/supabase'
 
 export default function GoogleLogin() {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
   const signInWithGoogle = async () => {
+    if (!supabase) {
+      setErrorMessage('Google sign-in is not configured yet.')
+      return
+    }
+
     setLoading(true)
     setErrorMessage('')
 
@@ -31,10 +36,10 @@ export default function GoogleLogin() {
       <button
         type="button"
         className="google-login-button"
-        disabled={loading}
+        disabled={loading || !isSupabaseConfigured}
         onClick={() => void signInWithGoogle()}
       >
-        {loading ? 'Opening Google...' : 'Continue with Google'}
+        {loading ? 'Opening Google...' : isSupabaseConfigured ? 'Continue with Google' : 'Google sign-in unavailable'}
       </button>
 
       {errorMessage && (
